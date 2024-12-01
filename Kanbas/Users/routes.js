@@ -2,7 +2,17 @@ import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 export default function UserRoutes(app) {
-  const createUser = (req, res) => { };
+  const createUser = async (req, res) => {
+    try {
+      const user = await dao.createUser(req.body);
+      res.status(201).json(user);
+    } catch (error) {
+      console.error("Error in createUser route:", error.message);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  
+
   const deleteUser = async (req, res) => {
     const status = await dao.deleteUser(req.params.userId);
     res.json(status);
@@ -38,7 +48,7 @@ export default function UserRoutes(app) {
    }
     res.json(currentUser);
   };
-  
+
   const signup = async (req, res) => {
     const user = await dao.findUserByUsername(req.body.username);
     if (user) {
