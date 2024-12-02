@@ -6,15 +6,15 @@ export default function CourseRoutes(app) {
     const courses = await dao.findAllCourses();
     res.send(courses);
   });
-  app.delete("/api/courses/:courseId", (req, res) => {
+  app.delete("/api/courses/:courseId", async (req, res) => {
     const { courseId } = req.params;
-    const status = dao.deleteCourse(courseId);
+    const status = await dao.deleteCourse(courseId);
     res.send(status);
   });
-  app.put("/api/courses/:courseId", (req, res) => {
+  app.put("/api/courses/:courseId", async (req, res) => {
     const { courseId } = req.params;
     const courseUpdates = req.body;
-    const status = dao.updateCourse(courseId, courseUpdates);
+    const status = await dao.updateCourse(courseId, courseUpdates);
     res.send(status);
   });
   // create a new module for the course
@@ -55,6 +55,12 @@ export default function CourseRoutes(app) {
       res.status(500).json({ error: "Failed to create assignment" });
     }
   });
+
+  app.post("/api/courses", async (req, res) => {
+    const course = await dao.createCourse(req.body);
+    res.json(course);
+  });
+ 
   
 }
 

@@ -1,4 +1,5 @@
 import Database from "../Database/index.js";
+import model from "./model.js"
 export function updateModule(moduleId, moduleUpdates) {
     const { modules } = Database;
     const module = modules.find((module) => module._id === moduleId);
@@ -14,11 +15,12 @@ export function findModulesForCourse(courseId) {
   return modules.filter((module) => module.course === courseId);
 }
 export function createModule(module) {
-    const newModule = { ...module, _id: Date.now().toString() };
-    Database.modules = [...Database.modules, newModule];
-    console.log("Module created and added to Database:", newModule);
-    return newModule;
-}
+  delete module._id
+  return model.create(module);
+  // const newModule = { ...module, _id: Date.now().toString() };
+  // Database.modules = [...Database.modules, newModule];
+  // return newModule;
+ }   
 
 // Delete an assignment by ID
 export function deleteAssignment(assignmentId) {
