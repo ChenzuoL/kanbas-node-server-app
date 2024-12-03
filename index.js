@@ -13,7 +13,9 @@ import EnrollmentRoutes from './Kanbas/Enrollments/routes.js';
 import cors from "cors";
 const app = express();
 const CONNECTION_STRING = process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas"
-mongoose.connect(CONNECTION_STRING);
+mongoose.connect(CONNECTION_STRING)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error('Error connecting to MongoDB', err));
 app.use(
     cors({
       credentials: true,
