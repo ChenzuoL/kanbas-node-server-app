@@ -10,14 +10,14 @@ async function generateUniqueRandomId(prefix = "RS", length = 3) {
 
   while (!isUnique) {
     const randomNumber = generateRandomId(length); // Generate random 3-digit number
-    uniqueId = `${prefix}${randomNumber}`;// Generate random ID
+    uniqueId = `${prefix}${randomNumber}`; // Combine prefix with random number
     const existingRecord = await model.findOne({ _id: uniqueId }); // Check if it exists
     if (!existingRecord) {
-      isUnique = true; // ID is unique
+      isUnique = true; // Ensure ID is unique
     }
   }
 
-  return uniqueId;
+  return uniqueId; // Return the unique ID
 }
 
 export function findAllCourses() {
@@ -31,9 +31,9 @@ export function findCoursesForEnrolledUser(userId) {
 }
 export async function createCourse(course) {
   try {
-    // Assign a unique random string ID if _id is not provided
+    // Assign a unique random string ID if `_id` is not provided
     if (!course._id) {
-      course._id = await generateUniqueRandomId(3); // Generate a 3-digit unique ID
+      course._id = await generateUniqueRandomId("RS", 3); // Generate a 3-digit unique ID
     }
 
     const newCourse = await model.create(course);
@@ -43,6 +43,7 @@ export async function createCourse(course) {
     throw error;
   }
 }
+
 
 export function deleteCourse(courseId) {
   return model.deleteOne({ _id: courseId });
