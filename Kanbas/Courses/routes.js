@@ -3,9 +3,15 @@ import * as modulesDao from "../Modules/dao.js";
 import * as assignDao from "../Assignments/dao.js";
 export default function CourseRoutes(app) {
   app.get("/api/courses", async (req, res) => {
-    const courses = await dao.findAllCourses();
-    res.send(courses);
+    try {
+      const courses = await dao.findAllCourses();
+      res.status(200).json(courses); // Send all courses to the client
+    } catch (error) {
+      console.error("Error fetching courses in route:", error.message);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
+  
   app.delete("/api/courses/:courseId", async (req, res) => {
     const { courseId } = req.params;
     const status = await dao.deleteCourse(courseId);
@@ -33,9 +39,9 @@ export default function CourseRoutes(app) {
       res.status(500).json({ error: "Failed to create module" });
     }
   });
-  app.get("/api/courses/:courseId/modules", (req, res) => {
+  app.get("/api/courses/:courseId/modules", async (req, res) => {
     const { courseId } = req.params;
-    const modules = modulesDao.findModulesForCourse(courseId);
+    const modules = await modulesDao.findModulesForCourse(courseId);
     res.json(modules);
   });
   // create a new assignments for the course

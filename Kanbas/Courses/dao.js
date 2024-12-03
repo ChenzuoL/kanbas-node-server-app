@@ -1,5 +1,6 @@
 import Database from "../Database/index.js";
 import model from"./model.js"
+
 function generateRandomId(length = 3) {
   return Math.random().toString().slice(2, 2 + length); // Generate a random numeric string
 }

@@ -23,7 +23,7 @@ export default function ModuleRoutes(app) {
       }
 
       // Call the updateModule function from modulesDao
-      const updatedModule = modulesDao.updateModule(moduleId, moduleUpdates);
+      const updatedModule = await modulesDao.updateModule(moduleId, moduleUpdates);
       res.status(200).send(updatedModule);
     } catch (error) {
       console.error("Error updating module:", error.message);

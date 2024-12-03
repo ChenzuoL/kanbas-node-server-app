@@ -125,6 +125,25 @@ export default function UserRoutes(app) {
     res.status(500).json({ message: error.message });
   }
 };
+const findCoursesForUser = async (req, res) => {
+  const currentUser = req.session["currentUser"];
+  if (!currentUser) {
+    res.sendStatus(401);
+    return;
+  }
+  if (currentUser.role === "ADMIN") {
+    const courses = await courseDao.findAllCourses();
+    res.json(courses);
+    return;
+  }
+  let { uid } = req.params;
+  if (uid === "current") {
+    uid = currentUser._id;
+  }
+  const courses = await enrollmentsDao.findCoursesForUser(uid);
+  res.json(courses);
+};
+
 
   app.post("/api/users/current/courses", createCourse);
   app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
@@ -137,5 +156,6 @@ export default function UserRoutes(app) {
   app.post("/api/users/signin", signin);
   app.post("/api/users/signout", signout);
   app.post("/api/users/profile", profile);
+  app.get("/api/users/:uid/courses", findCoursesForUser);
 }
 
