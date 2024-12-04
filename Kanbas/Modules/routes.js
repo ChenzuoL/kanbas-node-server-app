@@ -2,15 +2,11 @@ import * as modulesDao from "./dao.js";
 
 export default function ModuleRoutes(app) {
   app.delete("/api/modules/:moduleId", async (req, res) => {
-    try {
-      const { moduleId } = req.params;
-      const status = modulesDao.deleteModule(moduleId); // No need for `await` since it's not async
-      res.send(status);
-    } catch (error) {
-      console.error("Error deleting module:", error);
-      res.status(500).send({ error: "Failed to delete module" });
-    }
+    const { moduleId } = req.params;
+    const status = await modulesDao.deleteModule(moduleId);
+    res.send(status);
   });
+ 
 
   app.put("/api/modules/:moduleId", async (req, res) => {
     try {

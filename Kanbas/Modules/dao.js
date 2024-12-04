@@ -29,15 +29,10 @@ export function updateModule(moduleId, moduleUpdates) {
  }
   
 export function deleteModule(moduleId) {
-    const { modules } = Database;
-    Database.modules = modules.filter((module) => module._id !== moduleId);
-   }   
-   export function findModulesForCourse(courseId) {
-    return model.find({ course: courseId });
-    // const { modules } = Database;
-    // return modules.filter((module) => module.course === courseId);
-   }
-   
+ return model.deleteOne({ _id: moduleId });
+ // const { modules } = Database;
+ // Database.modules = modules.filter((module) => module._id !== moduleId);
+}
 
 export async function createModule(module) {
   try {
@@ -67,5 +62,12 @@ export function deleteAssignment(assignmentId) {
   const [deletedAssignment] = assignments.splice(index, 1); // Remove the assignment
   return deletedAssignment;
 }
+
+export function findModulesForCourse(courseId) {
+  return model.find({ course: courseId });
+  // const { modules } = Database;
+  // return modules.filter((module) => module.course === courseId);
+ }
+ 
 
   
