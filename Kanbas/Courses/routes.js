@@ -10,7 +10,7 @@ export default function CourseRoutes(app) {
     res.json(users);
   };
   app.get("/api/courses/:cid/users", findUsersForCourse);
-  
+
   app.get("/api/courses", async (req, res) => {
     try {
       const courses = await dao.findAllCourses();
@@ -53,23 +53,32 @@ export default function CourseRoutes(app) {
     const modules = await modulesDao.findModulesForCourse(courseId);
     res.json(modules);
   });
-  // create a new assignments for the course
-  app.post("/api/courses/:courseId/assignments", (req, res) => {
-    const { courseId } = req.params;
-    const assignment = {
-      ...req.body,
-      course: courseId,
-    };
-  
-    try {
-      const newAssignment = assignDao.createAssignment(assignment);
-      console.log("New assignment added:", newAssignment); // Debugging log
-      res.status(201).json(newAssignment); // Use 201 Created status code
-    } catch (error) {
-      console.error("Error creating assignment:", error);
-      res.status(500).json({ error: "Failed to create assignment" });
+  // Create a new assignment for the course
+app.post("/api/courses/:courseId/assignments", async (req, res) => {
+  const { courseId } = req.params;
+
+  // Assignment data, ensure `course` is tied to `courseId`
+  const assignment = {
+    ...req.body,
+    course: courseId,
+  };
+
+  try {
+    // If `_id` is not provided, generate one
+    if (!assignment._id) {
+      assignment._id = Date.now().toString(); // Example: unique string ID
     }
-  });
+
+    // Validate and save the new assignment
+    const newAssignment = await assignDao.createAssignment(assignment);
+
+    console.log("New assignment added:", newAssignment); // Debugging log
+    res.status(201).json(newAssignment); // Respond with the created assignment
+  } catch (error) {
+    console.error("Error creating assignment:", error.message);
+    res.status(400).json({ error: error.message });
+  }
+});
 
   app.post("/api/courses", async (req, res) => {
     const course = await dao.createCourse(req.body);

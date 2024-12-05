@@ -1,49 +1,57 @@
-import Database from "../Database/index.js";
+import AssignmentModel from "./model.js"; // Import the AssignmentModel
 
 // Create a new assignment
-export function createAssignment(assignment) {
-    const newAssignment = { ...assignment, _id: Date.now().toString() }; // Generate a unique ID
-    Database.assignments = [...Database.assignments, newAssignment]; // Add the new assignment
-    console.log("Database after adding assignment:", Database.assignments); // Debugging log
+export async function createAssignment(assignment) {
+  try {
+    const newAssignment = new AssignmentModel(assignment); // Use the imported model
+    await newAssignment.save();
     return newAssignment;
+  } catch (error) {
+    console.error("Error creating assignment:", error);
+    throw error;
   }
-  
+}
 
 // Find Assignments by courseId
-export function findAssignmentForCourse(coursetId) {
-    const{assignments} = Database;
-    return assignments.filter((assignment) => assignment.course === coursetId)
+export async function findAssignmentsForCourse(courseId) {
+  try {
+    return await AssignmentModel.find({ course: courseId }); // Query using the model
+  } catch (error) {
+    console.error("Error finding assignments for course:", error);
+    throw error;
+  }
 }
 
 // Find an assignment by its ID
-export function findAssignmentById(assignmentId) {
-    const { assignments } = Database;
-    return assignments.find((assignment) => assignment._id === assignmentId);
+export async function findAssignmentById(assignmentId) {
+  try {
+    return await AssignmentModel.findById(assignmentId); // Query using the model
+  } catch (error) {
+    console.error("Error finding assignment by ID:", error);
+    throw error;
   }
+}
 
 // Update an assignment by ID
-export function updateAssignment(assignmentId, assignmentUpdates) {
-  const { assignments } = Database;
-  const assignment = assignments.find((assignment) => assignment._id === assignmentId);
-
-  if (!assignment) {
-    throw new Error(`Assignment with ID ${assignmentId} not found`);
+export async function updateAssignment(assignmentId, assignmentUpdates) {
+  try {
+    return await AssignmentModel.findByIdAndUpdate(
+      assignmentId,
+      assignmentUpdates,
+      { new: true } // Return the updated document
+    );
+  } catch (error) {
+    console.error("Error updating assignment:", error);
+    throw error;
   }
-
-  Object.assign(assignment, assignmentUpdates); // Merge updates into the existing assignment
-  return assignment;
 }
 
 // Delete an assignment by ID
-export function deleteAssignment(assignmentId) {
-    const { assignments } = Database;
-    const index = assignments.findIndex((assignment) => assignment._id === assignmentId);
-  
-    if (index === -1) {
-      throw new Error(`Assignment with ID ${assignmentId} not found`);
-    }
-  
-    const [deletedAssignment] = assignments.splice(index, 1); // Remove the assignment
-    return deletedAssignment;
+export async function deleteAssignment(assignmentId) {
+  try {
+    return await AssignmentModel.findByIdAndDelete(assignmentId); // Delete using the model
+  } catch (error) {
+    console.error("Error deleting assignment:", error);
+    throw error;
   }
-
+}
