@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from 'express';
 import mongoose from "mongoose";
 import session from "express-session";
-import "dotenv/config";
 import UserRoutes from "./Kanbas/Users/routes.js";
 import Hello from "./Hello.js"
 import Lab5 from './Lab5/index.js';
