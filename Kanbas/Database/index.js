@@ -4,4 +4,6 @@ import assignments from "./assignments.js";
 import assignmentsData from "./assignmentsData.js"
 import users from "./users.js";
 import enrollments from "./enrollments.js";
-export default { courses, modules, assignments, users, assignmentsData, enrollments };
+import quizzes from "./quizzes.js";
+import questions from "./questions.js";
+export default { courses, modules, assignments, users, assignmentsData, enrollments, quizzes, questions };
