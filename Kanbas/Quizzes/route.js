@@ -1,6 +1,7 @@
 import * as quizDao from "./dao.js";
 import * as questionDao from "../Questions/dao.js"; 
 import * as answersDao from "../Answers/dao.js";
+import * as quizzesDao from "../Quizzes/dao.js";
 
 export default function QuizRoutes(app) {
     // Update a quiz by ID
@@ -109,19 +110,25 @@ export default function QuizRoutes(app) {
     });    
     
     // Get remaining attempts for a specific quiz and user
-    app.get("/api/quizzes/:quizId/attempts/:userId", (req, res) => {
+    app.get("/api/quizzes/:quizId/attempts/:userId", async (req, res) => {
         const { quizId, userId } = req.params;
         try {
-            const remainingAttempts = answersDao.getRemainingAttempts(quizId, userId);
+            let remainingAttempts = await answersDao.getRemainingAttempts(quizId, userId);
+    
+            // Initialize attempts if none exist
             if (remainingAttempts === null) {
-                return res.status(404).json({ error: "No attempts data found" });
+                const quiz = await quizzesDao.findQuizById(quizId); // Ensure this method exists
+                remainingAttempts = quiz.howManyAttempts;
+                await answersDao.setInitialRemainingAttempts(quizId, userId, remainingAttempts);
             }
+    
             res.status(200).json({ remainingAttempts });
         } catch (error) {
             console.error("Error fetching remaining attempts:", error);
             res.status(500).json({ error: "Internal server error" });
         }
     });
+    
 
     // Set initial remaining attempts for a quiz and user
     app.post("/api/quizzes/:quizId/attempts/:userId", (req, res) => {
